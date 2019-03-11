@@ -17,7 +17,6 @@ const userAuth = require('./userAuth.js');
 const hash = require('./utils/hash.js');
 
 //database
-//const dbUrl = 'mongodb://jiheekim:1qa2ws3ed@ds064799.mlab.com:64799/web_dev';
 const dbUrl = 'mongodb://Jung:1234abcd@ds064799.mlab.com:64799/instagram_clone_db';
 const mongoose = require('mongoose');
 const Post = require('./models/Post');
