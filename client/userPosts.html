@@ -1,0 +1,150 @@
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/header.css">
+<link rel="stylesheet" type="text/css" href="css/myPost.css">
+<script src="js/jquery.min.js"></script>
+<script>
+function signout(){
+  Promise.resolve()
+      .then(function(){
+          return $.post('signout');
+      })
+      .then(function(){
+          window.location.replace('signin.html');
+      })
+      .catch(function(err){
+          console.log(err);
+      });
+}
+
+//utility function 
+function queryStringToJSON(queryString) {
+  if(queryString.indexOf('?') > -1){
+    queryString = queryString.split('?')[1];
+  }
+  var pairs = queryString.split('&');
+  var result = {};
+  pairs.forEach(function(pair) {
+    pair = pair.split('=');
+    result[pair[0]] = decodeURIComponent(pair[1] || '');
+  });
+  return result;
+}
+
+//onload function
+function onload(){
+ 
+ Promise.resolve()
+ .then(function(){
+   return $.post('userPosts',queryStringToJSON(window.location.search.substring(1)));
+ })
+ .then(function(paths){
+    //login info
+    var loginId = paths.loginId;//login Id from response
+    
+    //display Login or Logtout 
+    var loginDisplayHtml="";
+    if(loginId!=""){
+       loginDisplayHtml="<a href ='javascript:signout();'>Log out</a>";
+    }else{
+       loginDisplayHtml="<a href ='/signin'>Log in</a>";
+    }
+    $('#loginDisplay').html(loginDisplayHtml);
+   
+   var myPosts = paths.posts;
+   //var userName = paths.userName;
+   $('#userPosts').html('');
+   var htmlString="";
+   var userName="";
+   myPosts.forEach(function(myPost, count){
+
+      var likeHtmlString ='<img src="img/icons/like_black.png" width="23px" onclick = "likeClick(\'' + myPost._id + '\');" onMouseOver="this.style.cursor=\'pointer\'">';
+  
+      //if user already liked the post, show red like icon.
+      var alreadyLiked = false;
+      //alert(post.likeIds);
+      
+      myPost.likeIds.forEach(function(likeId){ 
+        //alert(likeId + "==" +loginId);
+        if(likeId == loginId ){
+          alreadyLiked = true;
+          return;
+        }
+      });   
+      if(alreadyLiked==true){
+        likeHtmlString = '<img  src="img/icons/like_icon.png" width="23px">';
+      }
+
+      htmlString+=
+           '<div class="post_withInfo">'+
+            '<div class="post">'+
+                '<img src="'+myPost.image+'" alt="" width="500px" height="500px">'+
+            '</div>'+
+            '<div class="comment">'+
+              '<span id="likeIcon'+myPost._id+'">'+ likeHtmlString + '</span>'+
+              '<span id="like'+myPost._id + '">'+myPost.likeIds.length +'</span><br>'+
+               myPost.comment+
+            '</div>'+
+          '</div>';
+
+       userName = myPost.userName;
+   });
+   $('#userPosts').append(htmlString);
+   $('#userName').html(userName);
+ });
+}
+// like click function end
+ </script>
+
+</head>
+<body onload="onload();">
+<div class="header">
+  <!--logo display-->
+  <div class ="header_log">
+  <a target="_blank" href="posts">
+    <img src="img/icons/insta_logo.PNG" alt="" width="" height="">
+  </a>
+  </div>
+  <!--search display-->
+  <div class ="header_search">  
+    <input type="text" id="search_name" placeholder="Search" style="width:60%;margin:15px">
+  </div>
+  <!-- icon display -->
+  <div class ="header_icons" >
+    <div class="icon">
+    <a href="/myPosts">
+      <img src="img/icons/header_person.png" alt="" >
+    </a> 
+    </div>
+    <div class="icon"> 
+    <a target="_blank" href='javascript:signout();'>
+      <img src="img/icons/header_heart.png" alt=""  >
+    </a> 
+    </div>
+    <div class="signin">
+      <span id ='loginDisplay'></span>
+    </div>
+  </div>
+</div>
+<!--body section-->
+<div class="body">
+<!-- under header space -->
+  <div class="y_space">
+   
+  </div> 
+  <div class="personal_pannel">
+    <div class="info_icon">
+      <a target="_blank" href="">
+        <img class="img_person" src="img/sample7.jpg" alt="" >
+      </a>
+    </div>
+    <div class="info_user"><span id="userName"></span></div>
+  </div>
+  <div class="personal_pannel" id="userPosts">
+  </div>
+</div>
+<div class="bottom">
+</div>
+</body>
+</html>

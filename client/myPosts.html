@@ -1,0 +1,131 @@
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/header.css">
+<link rel="stylesheet" type="text/css" href="css/myPost.css">
+<script src="js/jquery.min.js"></script>
+<script>
+function signout(){
+  Promise.resolve()
+      .then(function(){
+          return $.post('signout');
+      })
+      .then(function(){
+          window.location.replace('signin.html');
+      })
+      .catch(function(err){
+          console.log(err);
+      });
+}
+//go to the page to write a post
+function handleUploadPost(){
+   window.location.replace('uploadPost.html');
+}
+
+//onload function
+function onload(){
+ 
+ Promise.resolve()
+ .then(function(){
+   return $.post('myPosts');
+ })
+ .then(function(paths){
+  var myPosts = paths.posts;
+  var userName = paths.userName;
+   $('#myPosts').html('');
+   var htmlString="";
+   myPosts.forEach(function(myPost, count){
+     
+      htmlString+=
+     '<div class="post_withInfo">'+
+      '<div class="post">'+
+          '<img src="'+myPost.image+'" alt="" width="500px" height="500px">'+
+      '</div>'+
+      '<div class="comment">'+
+        '<img src="img/icons/like_black.png" width="23px" style="margin-right:10px">'+ myPost.likeIds.length+'<br>'+
+        myPost.comment+
+      '</div>'+
+    '</div>';
+   });
+   $('#myPosts').append(htmlString);
+   //alert(userName);
+   $('#userName').html(userName);
+ });
+}
+// like click function end
+ </script>
+
+</head>
+<body onload="onload();">
+<div class="header">
+  <!--logo display-->
+  <div class ="header_log">
+  <a target="_blank" href="posts">
+    <img src="img/icons/insta_logo.PNG" alt="" width="" height="">
+  </a>
+  </div>
+  <!--search display-->
+  <div class ="header_search">  
+    <input type="text" id="search_name" placeholder="Search" style="width:60%;margin:15px">
+  </div>
+  <!-- icon display -->
+  <div class ="header_icons" >
+    <div class="icon">
+    <a href="/myPosts">
+      <img src="img/icons/header_person.png" alt="" >
+    </a> 
+    </div>
+    <div class="icon"> 
+    <a target="_blank" href='javascript:signout();'>
+      <img src="img/icons/header_heart.png" alt=""  >
+    </a> 
+    </div>
+    <div class="signin">
+      <a href ='javascript:signout();'>Log out</a>
+    </div>
+  </div>
+</div>
+<!--body section-->
+<div class="body">
+<!-- under header space -->
+  <div class="y_space">
+   
+  </div> 
+  <div class="div_post_button">
+    <button class="post_button" onclick="handleUploadPost();">POST</button>
+  </div>
+  <div class="personal_pannel">
+    <div class="info_icon">
+      <a target="_blank" href="">
+        <img class="img_person" src="img/sample7.jpg" alt="" >
+      </a>
+    </div>
+    <div class="info_user"><span id="userName"></span></div>
+  </div>
+  <div class="personal_pannel" id="myPosts">
+    <!--
+    <div class="post_withInfo">
+      <div class="post">
+          <img src="img/sample5.jpg" alt="" width="500px" height="500px">
+      </div>
+      <div class="comment">
+        <img src="img/icons/like_black.png" width="23px"><br>
+        this is a northern island..
+      </div>
+    </div>
+    <div class="post_withInfo">
+      <div class="post">
+          <img src="img/sample6.jpg" alt="" width="500px" height="500px">
+      </div>
+      <div class="comment">
+        <img src="img/icons/like_black.png" width="23px"><br>
+        this is a northern island..
+      </div>
+    </div>
+    -->
+  </div>
+</div>
+<div class="bottom">
+</div>
+</body>
+</html>

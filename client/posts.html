@@ -1,0 +1,165 @@
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/header.css">
+<link rel="stylesheet" type="text/css" href="css/post.css">
+<script src="js/jquery.min.js"></script>
+<script>
+function signout(){
+  Promise.resolve()
+      .then(function(){
+          return $.post('signout');
+      })
+      .then(function(){
+          window.location.replace('signin.html');
+      })
+      .catch(function(err){
+          console.log(err);
+      });
+}
+//onload function
+function onload(){
+  
+  Promise.resolve()
+  .then(function(){
+    return $.post('posts');//request posts 
+  })
+  .then(function (paths){
+
+    var posts = paths.posts;
+    var loginId = paths.loginId;//login Id from response
+    
+    //display Login or Logtout 
+    var loginDisplayHtml="";
+    if(loginId!=""){
+       loginDisplayHtml="<a href ='javascript:signout();'>Log out</a>";
+    }else{
+       loginDisplayHtml="<a href ='/signin'>Log in</a>";
+    }
+    $('#loginDisplay').html(loginDisplayHtml);
+    
+    //display post
+    var markedUserId = "";
+    var rowNum = 0;
+    var colIndex = 0;
+    var htmlString ="";
+    //While going through all posts, just fetch 3 posts from respective users.
+    //if posts are less than three, just skip placing div
+    posts.forEach(function(post,count){
+      //If userId is not equal to the previous userId, start replacing new user Id area with setting markedIndex zero.
+      if(markedUserId != post.userId){//new Post 
+        colIndex = 0;
+        if (count!=0) htmlString += '</div></div>'; 
+        markedUserId = post.userId;
+      }
+      if(colIndex > 2) 
+        return;
+      if(colIndex == 0){
+
+         htmlString +='<div class="personal_pannel" >'+
+                       '<div class="info_icon">'+
+                        '<img class="img_person" src="img/sample7.jpg" alt=""  onclick = "goUserPost(\'' + post.userId + '\');" onMouseOver="this.style.cursor=\'pointer\'">'+
+                       '</div>'+
+                       '<div class="info_user">'+post.userName+'</div>'+
+                       '<div class="gallery_pannel">';      
+      }
+   
+      var likeHtmlString ='<img src="img/icons/like_black.png" width="23px" onclick = "likeClick(\'' + post._id + '\');" onMouseOver="this.style.cursor=\'pointer\'">';
+  
+      //if user already liked the post, show red like icon.
+      var alreadyLiked = false;
+      //alert(post.likeIds);
+      
+      post.likeIds.forEach(function(likeId){ 
+        //alert(likeId + "==" +loginId);
+        if(likeId == loginId ){
+          alreadyLiked = true;
+          return;
+        }
+      });   
+      if(alreadyLiked==true){
+        likeHtmlString = '<img  src="img/icons/like_icon.png" width="23px">';
+      }
+      htmlString += '<div class="gallery_withInfo">' +
+                      '<div class="gallery">'+
+                        '<img src="'+post.image+'" alt="" >'+
+                      '</div>' +
+                      '<div class = "comment">' + 
+                        '<span id="likeIcon'+post._id+'">'+ likeHtmlString + '</span>'+
+                        '<span id="like'+post._id + '">'+post.likeIds.length +'</span><br>'+
+                        post.comment +
+                      '</div>' +
+                    '</div>';  
+      colIndex++;
+    });
+    //alert(htmlString);
+    $('#posts').append(htmlString);
+  })
+  .catch(function(err){
+    console.log(err);
+  });
+}//end of onload()
+
+// like click function
+// changes the like icon and increment the like count.
+function likeClick(id){
+  Promise.resolve()
+  .then(function(){
+    return $.post('incrLike', {id : id});
+  })
+  .then(function(like){//if success, toggle the like icon to the red icon.
+    $('#like' + like.id).html(like.count);
+    $('#likeIcon' + like.id).html('<img  src="img/icons/like_icon.png" width="23px">');
+  })
+  .catch(function(err){
+    console.log(err);
+  });
+}
+
+function goUserPost(userId){
+  window.location.href="userPosts.html?userId="+userId;
+}
+// like click function end
+</script>
+</head>
+<body onload="onload();">
+<!--header section-->  
+<div class="header">
+  <!--logo display-->
+  <div class ="header_log">
+  <a target="_blank" href="/posts">
+    <img src="img/icons/insta_logo.PNG" alt="" width="" height="">
+  </a>
+  </div>
+  <!--search display-->
+  <div class ="header_search">  
+    <input type="text" id="search_name" placeholder="Search" style="width:60%;margin:15px">
+  </div>
+  <!-- icon display -->
+  <div class ="header_icons" >
+    <div class="icon">
+    <a href="/myPosts">
+      <img src="img/icons/header_person.png" alt="" >
+    </a> 
+    </div>
+    <div class="icon"> 
+    <a target="_blank" href="">
+      <img src="img/icons/header_heart.png" alt=""  >
+    </a> 
+    </div>
+    <div class="signin">
+      <span id ='loginDisplay'></span>
+    </div>
+  </div>
+</div>
+<!--body section-->
+<div class="body">
+<!-- under header space -->
+<div class="y_space"></div>  
+<div  id="posts">
+  
+</div>
+<div class="bottom">
+</div>
+</body>
+</html>

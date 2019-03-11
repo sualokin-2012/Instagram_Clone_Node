@@ -1,0 +1,157 @@
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/post.css">
+<script src="js/jquery.min.js"></script>
+<script>
+//onload function
+function onload(){
+  var userId = "";
+  Promise.resolve()
+  .then(function(){
+    return $.post('posts');//request posts 
+  })
+  .then(function (posts){
+    $('#posts').html('');
+    var htmlString = "";
+    htmlString +='<div class="info_icon">'+
+          '<a target="_blank" href="">'+
+            '<img class="img_person" src="img/sample7.jpg" alt="" >'+
+          '</a>'+
+        '</div>'+
+        '<div class="info_user">margo hupert</div>'+
+        '<div class="gallery_pannel">';
+   
+    //display just three posts from each person
+    var keepgoing=true;
+    posts.forEach(function(post,count){
+      //alert(count);
+      if(count>2)keepgoing=false;
+      if(keepgoing){
+          htmlString +=
+            '<div class="gallery_withInfo">' +
+              '<div class="gallery">'+
+                '<a target="_blank" href="">'+
+                  '<img src="'+post.image+'" alt="" >'+
+                '</a>'+
+                '</div>' +
+                '<div class = "comment">' + 
+                  '<img onclick = "likeClick(\'' + post._id + '\');" src="img/icons/like_black.png" width="23px"><br>' +
+                    post.comment +
+                '</div>' +
+            '</div>';
+      }
+    });
+    htmlString += '</div>';
+    $('#posts').append(htmlString);
+  })
+  .catch(function(err){
+    console.log(err);
+  });
+  console.log('onload');
+}//end of onload()
+
+// like click function
+function likeClick(id){
+  Promise.resolve()
+  .then(function(){
+    return $.post('incrLike', {id : id});
+  })
+  .then(function(like){
+    $('#like' + like.id).html(like.count);
+  })
+  .catch(function(err){
+    console.log(err);
+  });
+}
+// like click function end
+
+</script>
+</head>
+<body onload="onload();">
+<!--header section-->  
+<div class="header">
+  <!--logo display-->
+  <div class ="header_log">
+  <a target="_blank" href="/posts">
+    <img src="img/icons/insta_logo.PNG" alt="" width="" height="">
+  </a>
+  </div>
+  <!--search display-->
+  <div class ="header_search">  
+    <input type="text" id="search_name" placeholder="Search" style="width:60%;margin:15px">
+  </div>
+  <!-- icon display -->
+  <div class ="header_icons" >
+    <div class="icon">
+    <a href="/myPosts">
+      <img src="img/icons/header_person.png" alt="" >
+    </a> 
+    </div>
+    <div class="icon"> 
+    <a target="_blank" href="">
+      <img src="img/icons/header_heart.png" alt=""  >
+    </a> 
+    </div>
+    <div class="signin">
+      <a href ="/signin">Log in</a>
+    </div>
+  </div>
+</div>
+<!--body section-->
+<div class="body">
+<!-- under header space -->
+<div class="y_space"></div>  
+<div  id="posts">
+  
+</div>
+<!--
+<div class="personal_pannel" id="posts">
+  
+</div>
+-->
+<div class="personal_pannel" >
+  <div class="info_icon">
+    <a target="_blank" href="">
+      <img class="img_person" src="img/sample7.jpg" alt="" >
+    </a>
+  </div>
+  <div class="info_user">margo hupert</div>
+  <div class="gallery_pannel">
+  <div class="gallery_withInfo">
+    <div class="gallery">
+      <a target="_blank" href="">
+        <img src="img/sample5.jpg" alt="" >
+      </a>
+    </div>
+    <div class="comment">
+      <img src="img/icons/like_black.png" width="23px"><br>
+      this is a northern island..
+    </div>
+  </div>
+  <div class="gallery_withInfo">
+    <div class="gallery">
+      <a target="_blank" href="">
+        <img src="img/sample6.jpg" alt="" >
+      </a>
+    </div>
+    <div class="comment">
+      <img src="img/icons/like_black.png" width="23px">
+    </div>
+  </div>
+  <div class="gallery_withInfo">
+    <div class="gallery">
+      <a target="_blank" href="">
+        <img src="img/sample7.jpg" alt="" >
+      </a>
+    </div>
+    <div class="comment">
+     <img src="img/icons/like_black.png" width="23px">
+    </div>
+  </div> 
+  </div>
+</div>
+<div class="bottom">
+</div>
+</body>
+</html>
