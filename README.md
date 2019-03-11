@@ -13,13 +13,13 @@ This  showcases how to use `socket.io` with a static `express` server.
 Once the server is running, open the project in the shape of 'https://projectname-username.c9users.io/'. As you enter your name, watch the Users list (on the left) update. Once you press Enter or Send, the message is shared with all connected clients.
 
 # Instagram_Clone_Node
-This web project is to build a clone of "Instagram" website using HTML, CSS, Javascript, Node.js and MongoDB in 2016.
+This web project is to build a clone of "Instagram" website using HTML, CSS, Javascript, Node.js and MongoDB for Web Development Course in 2017.
 
 ## Technologies
 Frontend - HTML, CSS, Javascript
 
-Backend - Node.js
+Backend - [Node.js](https://nodejs.org/en/), [Express.js](https://expressjs.com/)
 
-Database - MongoDB, Mongoose
+Database - [Mongo DB](https://www.mongodb.com/), [mLab](https://mlab.com/), [Mongoose](https://mongoosejs.com/)
 
 Tool - C9.io
