@@ -1,6 +1,3 @@
-## C9.io Readme
-
-This  showcases how to use `socket.io` with a static `express` server.
 
 ## Running the server
 
