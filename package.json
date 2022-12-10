@@ -10,7 +10,7 @@
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.17.2",
     "connect-mongodb-session": "^2.4.1",
-    "express": "^4.15.3",
+    "express": "^4.17.3",
     "express-fileupload": ">=1.1.9",
     "express-session": "^1.15.3",
     "guid": "0.0.12",
